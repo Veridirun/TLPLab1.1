@@ -15,6 +15,7 @@ namespace TLPLab1._1
         private char startSymbol;
         private int minLen;
         private int maxLen;
+        static private Random rand = new Random();
 
         public char GetStartSymbol()
         {
@@ -98,23 +99,24 @@ namespace TLPLab1._1
         {
             string current = startSymbol.ToString();
 
-            Random rand = new Random();
+            //Random rand = new Random(Guid.NewGuid().GetHashCode());
             while (true)
             {
                 for (int i = 0; i < current.Length; i++)
                 {
+
                     if (grammarMap.ContainsKey(current[i]))
                     {
                         var rules = grammarMap[current[i]];
-                        //int idx = rand.Next(rules.Count);
+                        int idx = rand.Next(rules.Count);
 
-                        byte[] randomNumber = new byte[4];
-                        using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-                        {
-                            rng.GetBytes(randomNumber); // Заполняем массив случайными байтами
-                        }
-                        int idx = BitConverter.ToInt32(randomNumber, 0) % rules.Count;
-                        idx = Math.Abs(idx);
+                        //byte[] randomNumber = new byte[4];
+                        //using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
+                        //{
+                        //    rng.GetBytes(randomNumber); // Заполняем массив случайными байтами
+                        //}
+                        //int idx = BitConverter.ToInt32(randomNumber, 0) % rules.Count;
+                        //idx = Math.Abs(idx);
 
                         var it = rules.GetEnumerator();
                         for (int t = 0; t <= idx; t++) it.MoveNext();

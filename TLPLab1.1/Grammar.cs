@@ -95,42 +95,46 @@ namespace TLPLab1._1
             return grammar;
         }
 
-        public string GenerateChain()
+        public string GenerateChains()
         {
-            string current = startSymbol.ToString();
+            string result = "";
+            List<string> rules = new List<string> { startSymbol.ToString() };
+            HashSet<string> usedSeq = new HashSet<string>();
 
-            //Random rand = new Random(Guid.NewGuid().GetHashCode());
-            while (true)
+            while(rules.Count > 0)
             {
-                for (int i = 0; i < current.Length; i++)
+                string sequence = rules.Last();
+                rules.RemoveAt(rules.Count - 1);
+
+                if (usedSeq.Contains(sequence))
                 {
+                    continue;
+                }
+                usedSeq.Add(sequence);
 
-                    if (grammarMap.ContainsKey(current[i]))
+                bool onlyTerm = true;
+                for(int i = 0; i < sequence.Length; i++)
+                {
+                    char symbol = sequence[i];
+                    if(grammarMap.ContainsKey(symbol))
                     {
-                        var rules = grammarMap[current[i]];
-                        int idx = rand.Next(rules.Count);
-
-                        //byte[] randomNumber = new byte[4];
-                        //using (RandomNumberGenerator rng = RandomNumberGenerator.Create())
-                        //{
-                        //    rng.GetBytes(randomNumber); // Заполняем массив случайными байтами
-                        //}
-                        //int idx = BitConverter.ToInt32(randomNumber, 0) % rules.Count;
-                        //idx = Math.Abs(idx);
-
-                        var it = rules.GetEnumerator();
-                        for (int t = 0; t <= idx; t++) it.MoveNext();
-                        string terminal = it.Current;
-                        current = current.Remove(i, 1).Insert(i, terminal);
-                        i--;
-                        if (current.Length > maxLen) break;
+                        onlyTerm = false;
+                        foreach (string elem in grammarMap[symbol]) 
+                        {
+                            string temp = sequence.Substring(0, i) + elem + sequence.Substring(i + 1);
+                            if(temp.Length <= maxLen + 1)
+                            {
+                                rules.Add(temp);
+                            }
+                        }
                     }
                 }
-                if (current.Length >= minLen && current.Length <= maxLen)
-                    return current;
-                else
-                    current = startSymbol.ToString();
+                if (onlyTerm && sequence.Length >= minLen && sequence.Length <= maxLen)
+                {
+                    result += string.IsNullOrEmpty(sequence) ? "lambda" + "\r\n" : sequence + "\r\n";
+                }
             }
+            return result;
         }
     }
 }

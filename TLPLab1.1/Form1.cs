@@ -39,13 +39,8 @@ namespace TLPLab1._1
             {
                 MessageBox.Show(this, "Неправильные входные данные", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            int amountOfLines = 7;
-            string result = "";
-            for (int i = 0; i<amountOfLines; i++)
-            {
-                textBoxResult.AppendText(grammar.GenerateChain());
-                textBoxResult.AppendText(Environment.NewLine);
-            }
+            string result = grammar.GenerateChains();
+            textBoxResult.AppendText(result);
         }
     }
 }
